@@ -30,13 +30,13 @@ Then will identify the users name schema, where we will generate many common use
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_4.png?raw=true)
 
-then will generate all the linkedin employess based on the identified username schema.
-
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_5.png?raw=true)
 
-then will try to enumerate the valid employees usernames.
+then will generate all the linkedin employess based on the identified username schema.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_6.png?raw=true)
+
+then will try to enumerate the valid employees usernames.
 
 After we identified the valid usernames we will starting password spraying attack on them.
 
