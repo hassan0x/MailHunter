@@ -38,24 +38,28 @@ then will generate all the linkedin employess based on the identified username s
 
 then will try to enumerate the valid employees usernames.
 
-After we identified the valid usernames we will starting password spraying attack on them.
-
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_7.png?raw=true)
 
-and in our case we identified one valid username and password.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_8.png?raw=true)
 
-then we will use this valid credentials to dump the global address list.
+
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_9.png?raw=true)
 
-then we will use the dumped global address list to launch another deep password spraying attack on all the dumped users.
+After we identified the valid usernames we will starting password spraying attack on them.
+
+and in our case we identified one valid username and password.
+then we will use this valid credentials to dump the global address list.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_10.png?raw=true)
 
-finally we successfully found 4 valid usernames and passwords, now we can login to the exchange server with these found credentials and start our post exploitation process.
-Happy Hunting.
+then we will use the dumped global address list to launch another deep password spraying attack on all the dumped users.
+
+
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_11.png?raw=true)
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_12.png?raw=true)
+
+finally we successfully found 4 valid usernames and passwords, now we can login to the exchange server with these found credentials and start our post exploitation process.
+Happy Hunting.
