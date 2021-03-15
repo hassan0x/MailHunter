@@ -1,6 +1,6 @@
 # Mail Hunter Tool
 
-![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_0.png)
+![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_0.png?raw=true)
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_1.png?raw=true)
 
