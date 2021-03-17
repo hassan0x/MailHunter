@@ -44,7 +44,7 @@ The tool will take some time to finish this process and after that will save the
 
 In our case here the identified name schema was the first character of the first name then the last name for example if someone called hassan saad the name schema to this persion would be "hsaad", take note of the used schema becouse we will need it in the next step.
 
-Then will generate all the linkedin employess based on the identified name schema.
+Then will generate all the linkedin employess based on the identified name schema, and in this case we will select option 4 which will generate all the users based on this schema.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_6.png?raw=true)
 
