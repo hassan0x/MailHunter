@@ -28,6 +28,10 @@ When this task finished, the result will be written to linkedin_employees.txt fi
 
 The next task will be to enumerate the interal IP of the exchange mail server, and the internal company domain.
 
+You will need to enter the exchange server of the company for example mail.company.com or webmail.company.com, then you will need to enter the company name.
+
+the tool will take this information and trying to discover the Internal IP of the exchange server, then will trying to discover the Internal Domain based on the function of the MailSniper tool.
+
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_3.png?raw=true)
 
 Then will identify the users name schema, where we will generate many common used naming schemas.
