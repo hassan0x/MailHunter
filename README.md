@@ -52,11 +52,15 @@ Then will try to enumerate the valid employees usernames.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_7.png?raw=true)
 
+This process will take also some time.
+
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_8.png?raw=true)
+
+After finished tha valid usernames will save to a file.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_9.png?raw=true)
 
-After we identified the valid usernames we will starting password spraying attack on them, and in our case we identified one valid username and password.
+After we identified the valid usernames we will start password spraying attack on them, and in our case we identified one valid username and password.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_10.png?raw=true)
 
