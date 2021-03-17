@@ -75,3 +75,5 @@ Then we will use the dumped global address list to launch another deep password 
 Finally we successfully found 4 valid usernames and passwords, now we can login to the exchange server with these found credentials and start our post exploitation process.
 
 Happy Hunting.
+
+Note: Some features of this tool is based on the MailSniper tool and the Ruler tool.
