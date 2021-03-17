@@ -77,3 +77,5 @@ Finally we successfully found 4 valid usernames and passwords, now we can login 
 Happy Hunting.
 
 Note: Some features of this tool is based on the MailSniper tool and the Ruler tool.
+
+### This tool is for educational purposes only.
