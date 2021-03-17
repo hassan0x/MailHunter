@@ -12,9 +12,9 @@ Now we will select option 0 which will take us to the full chain attack.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_0.png?raw=true)
 
-The first task will be to login to linkedin and enumerate all the company employees, you will need to enter valid linkedin account credentials, and the company linkedin ID.
+The first task will be to login to linkedin using the firefox web driver and enumerate all the company employees, you will need to enter valid linkedin account credentials, and the company linkedin ID.
 
-You can find the linkedin company id through the following picture.
+You can find the linkedin company id through the following screenshot.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_13.png?raw=true)
 
