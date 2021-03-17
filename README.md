@@ -38,6 +38,8 @@ Then will identify the users name schema, where we will generate many common use
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_4.png?raw=true)
 
+The tool will take some time to finish this process and after that will save the found users in a file, and from that file you can identify the used naming schema.
+
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_5.png?raw=true)
 
 Then will generate all the linkedin employess based on the identified username schema.
