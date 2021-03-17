@@ -30,11 +30,11 @@ The next task will be to enumerate the interal IP of the exchange mail server, a
 
 You will need to enter the exchange server of the company for example mail.company.com or webmail.company.com, then you will need to enter the company name.
 
-the tool will take this information and trying to discover the Internal IP of the exchange server, then will trying to discover the Internal Domain based on the function of the MailSniper tool.
+the tool will take this information and trying to discover the Internal IP of the exchange server, then will trying to discover the Internal Domain based on the function of the MailSniper tool. (you will need to disable the antivirus becouse MailSniper marked as malicious)
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_3.png?raw=true)
 
-Then will identify the users name schema, where we will generate many common used naming schemas.
+Then will identify the users name schema, where we will generate many common used naming schemas and trying them against the timing reponse of the exchange server to discover the valid users and from them discover the valid schema, we will just take 20 users and try on them all the naming schema.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_4.png?raw=true)
 
