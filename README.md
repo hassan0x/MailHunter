@@ -2,9 +2,11 @@
 
 MailHunter is a tool to give you access to the exchange server mails.
 
-The tool is diveded into two parts, the first is the full chain attack which take you from nothing to access the exchange server mails, the second is the single task where you can run only the functions that you need.
+The tool has two modes:
+  - The first is the full chain attack which take you from nothing to access the exchange server mails.
+  - The second is the single task where you can run only the functions that you need.
 
-Here we will take the full chain attack which contains all the tool functions.
+Here we will talk about the full chain attack which contains all the tool functions.
 
 Now we will select option 0 which will take us to the full chain attack.
 
