@@ -18,6 +18,8 @@ You can find the linkedin company id through the following screenshot.
 
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_13.png?raw=true)
 
+Now we will take the credentials and the company ID and start the firefox web driver and authenticate to linkedin, and go to the company employees and dump all their usernames, this process may take some time depends on the number of employees, but to make this process limited by time, we set the maximum number of retured employees is 1000.
+
 ![alt text](https://github.com/hassan0x/resources/raw/main/Screenshot_1.png?raw=true)
 
 When this task finished, the result will be written to linkedin_employees.txt file.
